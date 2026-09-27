@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" manifest="cache.appcache">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DANO GAMING</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: #0b0d10;
+        color: #c8ced8;
+        font:
+          15px/1.45 "Segoe UI",
+          system-ui,
+          sans-serif;
+      }
+      #brand {
+        text-align: center;
+        padding: 8px 10px;
+        background: #0e1116;
+        border-bottom: 1px solid #1e2732;
+      }
+      #brand img {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+      #brand b {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: #e6ebf2;
+        vertical-align: middle;
+      }
+
+      /* running: a spinner under the brand. jb.js sets body.done / body.fail / body.log. */
+      #spin {
+        position: fixed;
+        top: calc(50% + 20px);
+        left: 50%;
+        width: 46px;
+        height: 46px;
+        margin: -23px 0 0 -23px;
+        border: 4px solid #1e2732;
+        border-top-color: #7fd0a0;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #msg {
+        position: fixed;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        text-align: center;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        display: none;
+      }
+      #wrap {
+        padding: 0;
+      }
+      #state,
+      #out {
+        display: none;
+      }
+
+      body.done #spin {
+        display: none;
+      }
+      body.fail #spin {
+        display: none;
+      }
+      body.fail #msg {
+        display: block;
+      }
+
+      /* ?log=1 -- the full step log, styled like the landing. */
+      body.log #spin,
+      body.log #msg {
+        display: none;
+      }
+      body.log #wrap {
+        padding: 14px 18px;
+      }
+      body.log #state {
+        display: block;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+      body.log #out {
+        display: block;
+        white-space: pre-wrap;
+        font:
+          12px/1.45 Consolas,
+          monospace;
+        background: #11151b;
+        border: 1px solid #1e2732;
+        border-radius: 5px;
+        padding: 10px 12px;
+        height: calc(100vh - 141px);
+        overflow-y: auto;
+      }
+      .ok {
+        color: #7fd0a0;
+      }
+      .bad {
+        color: #d08a7f;
+      }
+      .warn {
+        color: #d8c07f;
+      }
+      .safe {
+        color: #7fd0a0;
+      }
+      .danger {
+        color: #d08a7f;
+      }
+      code {
+        color: #9fb3d0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="brand">
+      <img
+        src="data:image/png;base64,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"
+        alt=""
+        width="28"
+        height="28"
+      /><b>DANO GAMING</b>
+    </div>
+    <div id="spin"></div>
+    <div id="msg">Restart your console</div>
+    <div id="wrap">
+      <div id="state"></div>
+      <div id="out"></div>
+    </div>
+    <script type="module">
+      import "./jb.js?v=10";
+    </script>
+  </body>
+</html>
